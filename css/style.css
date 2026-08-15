@@ -380,6 +380,62 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 
 .not-selling-note { font-size: 0.82rem; color: var(--dust); margin-top: 1rem; max-width: 30rem; }
 
+/* ---------- contact ---------- */
+.contact-panel { display: flex; flex-direction: column; gap: 1.4rem; }
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  text-decoration: none;
+  color: var(--frost);
+  border: 1px solid var(--edge);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1.1rem;
+}
+.contact-row:hover { border-color: var(--candy-lime); }
+.contact-icon {
+  flex: none;
+  width: 2.2rem; height: 2.2rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--candy-lime) 18%, transparent);
+  color: var(--candy-lime);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contact-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.contact-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dust); }
+.contact-value { font-size: 0.98rem; font-weight: 600; word-break: break-word; }
+#contacto .wifd-social { justify-content: flex-start; }
+
+/* ---------- floating product stickers ---------- */
+.sticker {
+  position: absolute;
+  width: clamp(4.5rem, 14vw, 7.5rem);
+  height: auto;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  animation: sticker-float 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticker { animation: none; }
+}
+@keyframes sticker-float {
+  0%, 100% { transform: translateY(0) rotate(var(--sticker-rot, -6deg)); }
+  50% { transform: translateY(-10px) rotate(var(--sticker-rot, -6deg)); }
+}
+
+.sticker--hero { --sticker-rot: -10deg; top: -0.5rem; right: 0.25rem; }
+@media (min-width: 46rem) {
+  .sticker--hero { top: 1.5rem; right: -1.5rem; width: 8rem; }
+}
+
+.sticker--contact { --sticker-rot: -5deg; bottom: -1.5rem; right: 0.25rem; }
+@media (min-width: 46rem) {
+  .sticker--contact { right: -2rem; width: 7rem; }
+}
+
 /* ---------- footer ---------- */
 footer { border-top: 1px solid var(--edge); padding: 3rem 1.25rem 2.5rem; text-align: center; }
 footer .wordmark { justify-content: center; margin: 0 auto 0.8rem; }
