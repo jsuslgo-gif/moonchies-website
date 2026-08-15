@@ -63,7 +63,7 @@ var I18N = {
     'wifd.eyebrow': 'La serie',
     'wifd.lede': '5 episodios y contando — cada experimento, documentado, salga bien o mal.',
     'wifd.soon': 'Próximamente',
-    'wifd.play_label': 'Reproducir video de TikTok',
+    'wifd.play_label': 'Ver video en TikTok',
     'wifd.like_label': 'Dale like en TikTok',
     'wifd.ep1_tag': 'Episodio 1',
     'wifd.ep1_title': 'Skittles — la primera prueba',
@@ -130,7 +130,7 @@ var I18N = {
     'wifd.eyebrow': 'The series',
     'wifd.lede': '5 episodes and counting — every experiment, documented, win or fail.',
     'wifd.soon': 'Coming soon',
-    'wifd.play_label': 'Play TikTok video',
+    'wifd.play_label': 'Watch video on TikTok',
     'wifd.like_label': 'Like on TikTok',
     'wifd.ep1_tag': 'Episode 1',
     'wifd.ep1_title': 'Skittles — the first try',
@@ -251,34 +251,18 @@ function wireNetlifyForm(formId, confirmId) {
   });
 }
 
-/* ---------- Will It Freeze Dry: lazy-loaded TikTok embeds ---------- */
+/* ---------- Will It Freeze Dry: open the exact video on TikTok ---------- */
+// Embedding TikTok's video widget inline proved unreliable across browsers
+// (broken layout, slow/blank loading, "related videos" at the end, and a
+// fallback CTA that didn't point at the right video). Opening the exact
+// video URL on TikTok itself is simple, fast, and always correct — and it
+// still counts as a real view/like on the actual platform.
 (function () {
-  // TikTok's embed.js only scans the DOM for .tiktok-embed blockquotes at the
-  // moment it runs. Since we add blockquotes dynamically (one per click), we
-  // force a fresh script execution every time so it re-scans and picks up
-  // any new, not-yet-rendered blockquote.
-  function reprocessTikTokEmbeds() {
-    var old = document.querySelector('script[data-tiktok-embed-script]');
-    if (old) old.remove();
-    var s = document.createElement('script');
-    s.src = 'https://www.tiktok.com/embed.js';
-    s.async = true;
-    s.setAttribute('data-tiktok-embed-script', '1');
-    document.body.appendChild(s);
-  }
-
   document.querySelectorAll('.wifd-tile[data-tiktok-url]').forEach(function (tile) {
     var playBtn = tile.querySelector('.wifd-play');
     if (!playBtn) return;
     playBtn.addEventListener('click', function () {
-      var url = tile.getAttribute('data-tiktok-url');
-      var videoId = url.split('/video/')[1];
-      var wrap = document.createElement('div');
-      wrap.className = 'wifd-embed';
-      wrap.innerHTML = '<blockquote class="tiktok-embed" cite="' + url + '" data-video-id="' + videoId + '" data-embed-from="oembed" style="max-width:325px;min-width:280px;"><section></section></blockquote>';
-      tile.appendChild(wrap);
-      tile.classList.add('playing');
-      reprocessTikTokEmbeds();
+      window.open(tile.getAttribute('data-tiktok-url'), '_blank', 'noopener');
     });
   });
 })();
