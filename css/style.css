@@ -258,11 +258,10 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 .wifd-tile.playing.has-thumb::after,
 .wifd-tile.playing .wifd-tile-body { display: none; }
 .wifd-tile.playing {
-  aspect-ratio: auto;
   padding: 0;
   background: var(--space-black);
 }
-.wifd-embed { width: 100%; }
+.wifd-embed { width: 100%; height: 100%; border: 0; display: block; }
 
 .wifd-tile-body { position: relative; z-index: 1; }
 .wifd-tile-tag {

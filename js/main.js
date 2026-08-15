@@ -251,28 +251,23 @@ function wireNetlifyForm(formId, confirmId) {
 
 /* ---------- Will It Freeze Dry: lazy-loaded TikTok embeds ---------- */
 (function () {
-  var tiktokScriptLoaded = false;
-
-  function loadTikTokScript() {
-    if (tiktokScriptLoaded) return;
-    tiktokScriptLoaded = true;
-    var s = document.createElement('script');
-    s.src = 'https://www.tiktok.com/embed.js';
-    s.async = true;
-    document.body.appendChild(s);
-  }
-
   document.querySelectorAll('.wifd-tile[data-tiktok-url]').forEach(function (tile) {
     var playBtn = tile.querySelector('.wifd-play');
     if (!playBtn) return;
     playBtn.addEventListener('click', function () {
       var url = tile.getAttribute('data-tiktok-url');
-      var embed = document.createElement('div');
-      embed.className = 'wifd-embed';
-      embed.innerHTML = '<blockquote class="tiktok-embed" cite="' + url + '" data-embed-from="oembed" style="max-width:605px;min-width:325px;"><section></section></blockquote>';
-      tile.appendChild(embed);
+      var videoId = url.split('/video/')[1];
+      if (!videoId) {
+        window.open(url, '_blank', 'noopener');
+        return;
+      }
+      var iframe = document.createElement('iframe');
+      iframe.className = 'wifd-embed';
+      iframe.src = 'https://www.tiktok.com/embed/v2/' + videoId;
+      iframe.allow = 'autoplay; encrypted-media; fullscreen';
+      iframe.loading = 'lazy';
+      tile.appendChild(iframe);
       tile.classList.add('playing');
-      loadTikTokScript();
     });
   });
 })();
