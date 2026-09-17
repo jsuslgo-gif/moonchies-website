@@ -101,6 +101,14 @@ var I18N = {
   es: {
     'meta.title': 'Moonchies — Boricuas hasta en la luna',
     'a11y.skip': 'Saltar al contenido',
+    'nav.label': 'Secciones',
+    'nav.menu': 'Menú',
+    'nav.top': 'Volver arriba',
+    'nav.story': 'Historia',
+    'nav.mission': 'Misión',
+    'nav.episodes': 'Episodios',
+    'nav.ideas': 'Ideas',
+    'nav.contact': 'Contacto',
     'nav.cta': 'Lista de espera',
     'hero.badge': 'Hecho en Puerto Rico',
     'hero.tagline': 'Boricuas hasta en la luna.',
@@ -175,6 +183,14 @@ var I18N = {
   en: {
     'meta.title': 'Moonchies — Boricua, even on the moon',
     'a11y.skip': 'Skip to content',
+    'nav.label': 'Sections',
+    'nav.menu': 'Menu',
+    'nav.top': 'Back to top',
+    'nav.story': 'Story',
+    'nav.mission': 'Mission',
+    'nav.episodes': 'Episodes',
+    'nav.ideas': 'Ideas',
+    'nav.contact': 'Contact',
     'nav.cta': 'Waitlist',
     'hero.badge': 'Made in Puerto Rico',
     'hero.tagline': 'Boricua, even on the moon.',
@@ -285,6 +301,87 @@ function writeStorage(key, value) {
   if (toggle) {
     toggle.addEventListener('click', function () {
       applyLang(document.documentElement.lang === 'en' ? 'es' : 'en');
+    });
+  }
+})();
+
+/* ---------- navigation: menu, active section, scroll progress, back to top ---------- */
+(function () {
+  var header = document.querySelector('header.nav');
+  if (!header) return;
+  var menu = document.getElementById('navMenu');
+  var menuBtn = document.getElementById('navMenuBtn');
+  var progressBar = header.querySelector('.scroll-progress span');
+  var toTop = document.getElementById('backToTop');
+
+  function isOpen() { return header.classList.contains('menu-open'); }
+  function setMenu(open) {
+    if (!menuBtn) return;
+    header.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+  }
+
+  if (menu && menuBtn) {
+    menuBtn.addEventListener('click', function () { setMenu(!isOpen()); });
+    // Any link in the header (section, social, waitlist CTA) closes the menu.
+    header.addEventListener('click', function (e) {
+      if (e.target.closest('a')) setMenu(false);
+    });
+    document.addEventListener('click', function (e) {
+      if (isOpen() && !header.contains(e.target)) setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen()) { setMenu(false); menuBtn.focus(); }
+    });
+    header.addEventListener('focusout', function (e) {
+      if (isOpen() && e.relatedTarget && !header.contains(e.relatedTarget)) setMenu(false);
+    });
+    window.matchMedia('(min-width: 60rem)').addEventListener('change', function (e) {
+      if (e.matches) setMenu(false);
+    });
+  }
+
+  // Mark the section currently in the middle of the viewport.
+  if (menu && 'IntersectionObserver' in window) {
+    var links = {};
+    menu.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      links[link.getAttribute('href').slice(1)] = link;
+    });
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        Object.keys(links).forEach(function (id) { links[id].removeAttribute('aria-current'); });
+        var link = links[entry.target.id];
+        if (link) link.setAttribute('aria-current', 'location');
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('main section[id]').forEach(function (section) {
+      observer.observe(section);
+    });
+  }
+
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      if (progressBar) progressBar.style.transform = 'scaleX(' + progress + ')';
+      if (toTop) toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 1.2);
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  if (toTop) {
+    toTop.addEventListener('click', function () {
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+      var main = document.getElementById('contenido');
+      if (main) main.focus({ preventScroll: true });
     });
   }
 })();
