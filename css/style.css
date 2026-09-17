@@ -450,11 +450,10 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
   max-width: 34rem;
   margin: 0 0 0.85rem;
 }
-.story .eyebrow + p {
-  font-family: var(--font-display);
+.story .story-title {
   font-weight: 800;
   font-size: clamp(1.5rem, 5vw, 2rem);
-  color: var(--frost);
+  margin: 0 0 0.85rem;
 }
 .story a {
   color: var(--candy-lime);
@@ -729,7 +728,7 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
   font-size: 0.88rem;
   color: var(--dust);
 }
-.checkbox-field input { margin-top: 0.2rem; width: 1.05rem; height: 1.05rem; accent-color: var(--candy-lime); flex: none; }
+.checkbox-field input { margin-top: 0.1rem; width: 1.25rem; height: 1.25rem; accent-color: var(--candy-lime); flex: none; }
 
 .form-submit {
   display: inline-flex;
@@ -1005,7 +1004,6 @@ h2 { font-size: clamp(1.55rem, 5vw, 2.15rem); line-height: 1.15; }
 .hero-badge, .wifd-badge { font-size: 0.75rem; }
 .notfound-code { font-size: 1rem; letter-spacing: 0.2em; }
 .wordmark { font-family: var(--font-label); font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; }
-.story .eyebrow + p { letter-spacing: -0.02em; }
 
 /* ---------- FAQ ---------- */
 :root { interpolate-size: allow-keywords; }
@@ -1041,3 +1039,26 @@ h2 { font-size: clamp(1.55rem, 5vw, 2.15rem); line-height: 1.15; }
   transition: block-size 0.35s cubic-bezier(0.16, 1, 0.3, 1), content-visibility 0.35s allow-discrete;
 }
 .faq-item[open]::details-content { block-size: auto; }
+
+/* ---------- target sizes ---------- */
+/* Small text links get at least 24px of height (WCAG 2.5.8) without changing the layout. */
+.wifd-like, .footer-links a, .privacy-note a, .footer-legal a {
+  display: inline-block;
+  padding-block: 0.3rem;
+}
+.wifd-like { display: inline-flex; }
+.footer-links a { padding-inline: 0.2rem; }
+/* On touch screens, compact controls get a larger invisible hit area (~44px tall). */
+@media (pointer: coarse) {
+  .lang-toggle, .nav-cta, .nav-menu-btn, .social-pill, .wifd-like, .copy-btn, .text-btn,
+  .footer-links a, .privacy-note a, .footer-legal a, .hero-cta {
+    position: relative;
+  }
+  .lang-toggle::after, .nav-cta::after, .nav-menu-btn::after, .copy-btn::after, .text-btn::after,
+  .footer-links a::after, .privacy-note a::after, .footer-legal a::after, .hero-cta::after, .wifd-like::after {
+    content: "";
+    position: absolute;
+    inset: -8px -3px;
+  }
+  .social-pill::after { content: ""; position: absolute; inset: -5px -3px; }
+}
