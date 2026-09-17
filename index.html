@@ -163,6 +163,10 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             <span data-i18n="wifd.watch">Ver en TikTok</span>
           </a>
+          <button type="button" class="social-pill share-btn" data-share="episode" data-share-url="https://www.tiktok.com/@moonchiespr/video/7683908357513612558" data-share-title-id="ep10-title" aria-describedby="ep10-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>
+            <span class="btn-label" data-i18n="share.episode">Compartir</span>
+          </button>
           <a class="wifd-like" href="https://www.tiktok.com/@moonchiespr/video/7683908357513612558" target="_blank" rel="noopener" aria-describedby="ep10-title">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-6.7-4.3-9.3-8.2C1 10 1.6 6.6 4.4 5.1 6.7 3.8 9.4 4.6 12 7c2.6-2.4 5.3-3.2 7.6-1.9 2.8 1.5 3.4 4.9 1.7 7.7C18.7 16.7 12 21 12 21z"/></svg>
             <span data-i18n="wifd.like_label">Dale like en TikTok</span>
@@ -338,16 +342,23 @@
     <div class="panel">
       <form name="wifd-suggestions" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="suggestForm">
         <input type="hidden" name="form-name" value="wifd-suggestions">
+        <input type="hidden" name="idioma" value="es">
+        <input type="hidden" name="utm_source" value="">
+        <input type="hidden" name="utm_medium" value="">
+        <input type="hidden" name="utm_campaign" value="">
+        <input type="hidden" name="referido" value="">
         <p class="honeypot-field" aria-hidden="true"><label>No llenar: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
         <div class="field">
           <label for="suggest-idea" class="visually-hidden" data-i18n="suggest.field_label">Tu idea</label>
-          <textarea id="suggest-idea" name="idea" rows="3" required data-i18n-placeholder="suggest.placeholder" placeholder="Ej. ¿Gomitas de tamarindo?"></textarea>
+          <textarea id="suggest-idea" name="idea" rows="3" required maxlength="1000" data-validate="idea" aria-describedby="suggest-idea-error" data-i18n-placeholder="suggest.placeholder" placeholder="Ej. ¿Gomitas de tamarindo?"></textarea>
+          <p class="field-error" id="suggest-idea-error" hidden></p>
         </div>
-        <button type="submit" class="form-submit violet" data-i18n="suggest.submit">Enviar idea</button>
+        <button type="submit" class="form-submit violet"><span class="btn-spinner" aria-hidden="true"></span><span class="btn-label" data-i18n="suggest.submit">Enviar idea</span></button>
       </form>
-      <div class="form-confirm violet" id="suggestConfirm">
+      <div class="form-confirm violet" id="suggestConfirm" tabindex="-1">
         <div class="form-confirm-success">
           <p data-i18n="suggest.confirm">¡Gracias! La anotamos.</p>
+          <button type="button" class="text-btn" id="suggestAgain" data-i18n="suggest.again">Enviar otra idea</button>
         </div>
         <p class="form-confirm-error" data-i18n="form.error">Algo salió mal. Intenta de nuevo o escríbenos por Instagram.</p>
       </div>
@@ -364,18 +375,25 @@
       <p data-i18n="waitlist.lede">Te avisamos apenas tengamos empaque listo y fecha de lanzamiento — sin spam, solo lo importante.</p>
       <form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="waitlistForm">
         <input type="hidden" name="form-name" value="waitlist">
+        <input type="hidden" name="idioma" value="es">
+        <input type="hidden" name="utm_source" value="">
+        <input type="hidden" name="utm_medium" value="">
+        <input type="hidden" name="utm_campaign" value="">
+        <input type="hidden" name="referido" value="">
         <p class="honeypot-field" aria-hidden="true"><label>No llenar: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
         <div class="field">
           <label for="email" class="visually-hidden" data-i18n="waitlist.field_label">Correo electrónico</label>
-          <input type="email" id="email" name="correo" required data-i18n-placeholder="waitlist.placeholder" placeholder="tu@correo.com">
+          <input type="email" id="email" name="correo" required autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" data-validate="email" aria-describedby="email-error" data-i18n-placeholder="waitlist.placeholder" placeholder="tu@correo.com">
+          <p class="field-error" id="email-error" hidden></p>
+          <p class="email-suggest-wrap" id="email-suggest" hidden></p>
         </div>
         <label class="checkbox-field">
           <input type="checkbox" name="interes_suscripcion" value="si">
           <span data-i18n="waitlist.subscription">Me interesa una caja de suscripción</span>
         </label>
-        <button type="submit" class="form-submit lime" data-i18n="waitlist.submit">Unirme</button>
+        <button type="submit" class="form-submit lime"><span class="btn-spinner" aria-hidden="true"></span><span class="btn-label" data-i18n="waitlist.submit">Unirme</span></button>
       </form>
-      <div class="form-confirm lime" id="waitlistConfirm">
+      <div class="form-confirm lime" id="waitlistConfirm" tabindex="-1">
         <div class="form-confirm-success">
           <p data-i18n="waitlist.confirm">¡Listo! Te avisamos apenas lancemos.</p>
           <p class="form-confirm-follow" data-i18n="waitlist.follow">Mientras tanto, síguenos para ver los experimentos:</p>
@@ -384,6 +402,10 @@
             <a class="social-pill" href="https://tiktok.com/@moonchiespr" target="_blank" rel="noopener">TikTok</a>
             <a class="social-pill" href="https://facebook.com/moonchies.pr" target="_blank" rel="noopener">Facebook</a>
           </div>
+          <button type="button" class="text-btn share-btn" data-share="site">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>
+            <span class="btn-label" data-i18n="share.site">Compártelo con alguien</span>
+          </button>
         </div>
         <p class="form-confirm-error" data-i18n="form.error">Algo salió mal. Intenta de nuevo o escríbenos por Instagram.</p>
       </div>
@@ -397,6 +419,7 @@
     <p data-i18n="contact.lede">Por ahora no hay tienda, pero si tienes preguntas o quieres saber más, aquí nos encuentras.</p>
 
     <div class="panel contact-panel">
+      <div class="contact-email">
       <a class="contact-row" href="mailto:moonchies.pr@gmail.com">
         <span class="contact-icon" aria-hidden="true">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></svg>
@@ -406,6 +429,11 @@
           <span class="contact-value">moonchies.pr@gmail.com</span>
         </span>
       </a>
+      <button type="button" class="copy-btn" data-copy="moonchies.pr@gmail.com">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+        <span class="btn-label" data-i18n="contact.copy">Copiar correo</span>
+      </button>
+      </div>
 
       <div class="wifd-social">
         <a class="social-pill" href="https://instagram.com/moonchiespr" target="_blank" rel="noopener">Instagram · @moonchiespr</a>
@@ -440,6 +468,8 @@
 <button class="back-to-top" id="backToTop" type="button" aria-label="Volver arriba" data-i18n-aria-label="nav.top">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
+
+<p class="visually-hidden" id="liveRegion" role="status" aria-live="polite"></p>
 
 <script src="js/main.js"></script>
 </body>

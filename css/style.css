@@ -517,7 +517,7 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 }
 
 .wifd-tile-tag {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -586,7 +586,7 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
   gap: 1rem;
   margin: 3.5rem 0 1.1rem;
 }
-.wifd-rail-title { font-size: 1.2rem; margin: 0; }
+.wifd-rail-title { font-size: 1.45rem; margin: 0; }
 .wifd-rail-controls { display: none; gap: 0.5rem; }
 @media (min-width: 46rem) and (hover: hover) {
   .wifd-rail-controls { display: flex; }
@@ -636,7 +636,7 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 .wifd-card h4 {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.02rem;
+  font-size: 1.12rem;
   line-height: 1.25;
   text-wrap: balance;
   color: var(--frost);
@@ -694,7 +694,7 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 .field input[type="email"],
 .field textarea {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 1rem;
   background: var(--space-black);
   border: 1px solid var(--edge);
   border-radius: 0.7rem;
@@ -717,6 +717,9 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 .checkbox-field input { margin-top: 0.2rem; width: 1.05rem; height: 1.05rem; accent-color: var(--candy-lime); flex: none; }
 
 .form-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.92rem;
@@ -731,6 +734,54 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 .form-submit.lime:hover { background: color-mix(in srgb, var(--candy-lime) 85%, white); }
 .form-submit.violet { background: var(--candy-violet); color: var(--space-black); }
 .form-submit.violet:hover { background: color-mix(in srgb, var(--candy-violet) 85%, white); }
+
+.form-submit:disabled { cursor: progress; }
+.btn-spinner {
+  display: none;
+  width: 0.95em;
+  height: 0.95em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+.is-busy .btn-spinner { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.field-error {
+  margin: 0.5rem 0 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--candy-orange);
+}
+.field [aria-invalid="true"],
+.field [aria-invalid="true"]:hover { border-color: var(--candy-orange); }
+.email-suggest-wrap { margin: 0.5rem 0 0; }
+
+.text-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+}
+.email-suggest { display: inline; color: var(--candy-lime); text-align: left; }
+.email-suggest strong { font-weight: 700; }
+.form-confirm .text-btn { margin-top: 0.8rem; }
+.form-confirm .share-btn { color: var(--frost); }
+.form-confirm:focus { outline: none; }
+
+.share-btn { font-family: var(--font-body); cursor: pointer; background: transparent; display: inline-flex; align-items: center; gap: 0.4rem; }
+.share-btn.is-done, .copy-btn.is-done { color: var(--candy-lime); border-color: var(--candy-lime); }
 
 .form-confirm { display: none; margin-top: 1.1rem; font-size: 0.9rem; font-weight: 600; }
 .form-confirm p { margin: 0; }
@@ -747,6 +798,32 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 
 /* ---------- contact ---------- */
 .contact-panel { display: flex; flex-direction: column; gap: 1.4rem; }
+.contact-email { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+.contact-email .contact-row { align-self: stretch; }
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--frost);
+  background: transparent;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease-out, border-color 0.2s ease-out, transform 0.2s ease-out;
+}
+.copy-btn:active { transform: scale(0.96); }
+@media (hover: hover) {
+  .copy-btn:hover { border-color: var(--candy-lime); color: var(--candy-lime); }
+}
+@media (min-width: 46rem) {
+  .contact-email { flex-direction: row; align-items: center; }
+  .contact-email .contact-row { flex: 1; }
+  .copy-btn { align-self: stretch; padding-inline: 1.2rem; border-radius: 0.9rem; }
+}
 .contact-row {
   display: flex;
   align-items: center;
@@ -869,7 +946,7 @@ footer p.tagline { margin: 0 auto; font-size: 0.88rem; }
   html, body { background: #fff !important; color: #111 !important; }
   #stars, .skip-link, header.nav, .back-to-top, .divider, .sticker, .wifd-media, .wifd-like, .hero-cta,
   .wifd-rail-controls, .wifd-waitlist, .wifd-featured-actions,
-  form, .form-confirm, #sugerencias, .notfound-actions { display: none !important; }
+  form, .form-confirm, #sugerencias, .notfound-actions, .copy-btn, .share-btn { display: none !important; }
   * { box-shadow: none !important; text-shadow: none !important; animation: none !important; }
   section { max-width: none; padding: 1.2rem 0; break-inside: avoid-page; }
   body * { color: #111 !important; }

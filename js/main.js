@@ -190,6 +190,19 @@ var I18N = {
     'suggest.placeholder': 'Ej. ¿Gomitas de tamarindo?',
     'suggest.submit': 'Enviar idea',
     'suggest.confirm': '¡Gracias! La anotamos.',
+    'suggest.again': 'Enviar otra idea',
+    'form.sending': 'Enviando…',
+    'form.email_required': 'Escribe tu correo para unirte.',
+    'form.email_invalid': 'Ese correo no parece completo. Revisa que tenga @ y un dominio, como tu@correo.com.',
+    'form.email_suggest': '¿Quisiste decir',
+    'form.idea_required': 'Escribe tu idea antes de enviarla.',
+    'contact.copy': 'Copiar correo',
+    'contact.copied': '¡Correo copiado!',
+    'contact.copy_failed': 'No se pudo copiar',
+    'share.site': 'Compártelo con alguien',
+    'share.episode': 'Compartir',
+    'share.copied': '¡Link copiado!',
+    'share.site_text': 'Liofilizan lo cotidiano y documentan qué pasa, desde Puerto Rico.',
     'waitlist.eyebrow': 'Lista de espera',
     'waitlist.title': 'Sé de los primeros en probarlo',
     'waitlist.lede': 'Te avisamos apenas tengamos empaque listo y fecha de lanzamiento — sin spam, solo lo importante.',
@@ -202,7 +215,7 @@ var I18N = {
     'waitlist.disclaimer': 'Por ahora no vendemos nada — esto es lista de espera y contenido. La tienda llega en la próxima fase.',
     'footer.tagline': 'Hecho en Puerto Rico. Probado en el vacío.',
     'footer.credit': 'Ilustración de marca por',
-    'form.error': 'Algo salió mal. Intenta de nuevo o escríbenos por Instagram.',
+    'form.error': 'No se pudo enviar. Revisa tu conexión e intenta de nuevo; lo que escribiste sigue ahí. Si sigue fallando, escríbenos por Instagram.',
     'notfound.meta_title': 'Página no encontrada — Moonchies',
     'notfound.title': 'Aquí no quedó nada.',
     'notfound.body': 'Esta página no existe — o la liofilizamos de más. Vuelve al inicio o mira los experimentos.',
@@ -299,6 +312,19 @@ var I18N = {
     'suggest.placeholder': 'E.g. Tamarind gummies?',
     'suggest.submit': 'Send idea',
     'suggest.confirm': 'Thanks! We noted it.',
+    'suggest.again': 'Send another idea',
+    'form.sending': 'Sending…',
+    'form.email_required': 'Enter your email to join.',
+    'form.email_invalid': "That email doesn't look complete. Check that it has an @ and a domain, like you@email.com.",
+    'form.email_suggest': 'Did you mean',
+    'form.idea_required': 'Write your idea before sending it.',
+    'contact.copy': 'Copy email',
+    'contact.copied': 'Email copied!',
+    'contact.copy_failed': "Couldn't copy",
+    'share.site': 'Share it with someone',
+    'share.episode': 'Share',
+    'share.copied': 'Link copied!',
+    'share.site_text': 'They freeze-dry everyday things and document what happens, from Puerto Rico.',
     'waitlist.eyebrow': 'Waitlist',
     'waitlist.title': 'Be among the first to try it',
     'waitlist.lede': "We'll let you know as soon as packaging is ready and we have a launch date — no spam, just what matters.",
@@ -311,7 +337,7 @@ var I18N = {
     'waitlist.disclaimer': "We're not selling anything yet — this is just the waitlist and content. The store is coming in the next phase.",
     'footer.tagline': 'Made in Puerto Rico. Tested in a vacuum.',
     'footer.credit': 'Brand illustration by',
-    'form.error': 'Something went wrong. Please try again or message us on Instagram.',
+    'form.error': "Couldn't send. Check your connection and try again; what you wrote is still there. If it keeps failing, message us on Instagram.",
     'notfound.meta_title': 'Page not found — Moonchies',
     'notfound.title': 'Nothing left here.',
     'notfound.body': "This page doesn't exist — or we freeze-dried it a little too long. Head back home or check out the experiments.",
@@ -351,8 +377,10 @@ function writeStorage(key, value) {
     writeStorage(STORAGE_KEY, lang);
   }
 
+  var fromUrl = new URLSearchParams(window.location.search).get('lang');
   var saved = readStorage(STORAGE_KEY);
-  applyLang(saved === 'en' || saved === 'es' ? saved : 'es');
+  var initial = fromUrl === 'en' || fromUrl === 'es' ? fromUrl : saved;
+  applyLang(initial === 'en' || initial === 'es' ? initial : 'es');
 
   if (toggle) {
     toggle.addEventListener('click', function () {
@@ -442,33 +470,6 @@ function writeStorage(key, value) {
   }
 })();
 
-/* ---------- Netlify forms (AJAX submit) ---------- */
-function wireNetlifyForm(formId, confirmId) {
-  var form = document.getElementById(formId);
-  var confirmEl = document.getElementById(confirmId);
-  if (!form) return;
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var data = new URLSearchParams(new FormData(form)).toString();
-
-    fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: data
-    })
-      .then(function (res) {
-        if (!res.ok) throw new Error('bad status');
-        confirmEl.classList.remove('error');
-        confirmEl.classList.add('show');
-        form.reset();
-      })
-      .catch(function () {
-        confirmEl.classList.add('show', 'error');
-      });
-  });
-}
-
 /* ---------- Will It Freeze Dry: episodes open the exact video on TikTok ---------- */
 // Embedding TikTok's player inline proved unreliable (broken layout, slow blank
 // loads, unrelated "related videos"), so each episode is a plain link that
@@ -519,5 +520,282 @@ function wireNetlifyForm(formId, confirmId) {
   update();
 })();
 
-wireNetlifyForm('waitlistForm', 'waitlistConfirm');
-wireNetlifyForm('suggestForm', 'suggestConfirm');
+/* ---------- shared helpers: translate, announce, copy ---------- */
+function t(key) {
+  var dict = I18N[document.documentElement.lang] || I18N.es;
+  return dict[key] !== undefined ? dict[key] : (I18N.es[key] || '');
+}
+
+// Swap an element's text to another dictionary key, keeping it in sync with the language toggle.
+function setText(el, key) {
+  el.setAttribute('data-i18n', key);
+  el.textContent = t(key);
+}
+
+function announce(message) {
+  var region = document.getElementById('liveRegion');
+  if (!region) return;
+  region.textContent = '';
+  setTimeout(function () { region.textContent = message; }, 50);
+}
+
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+  return new Promise(function (resolve, reject) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.className = 'visually-hidden';
+    document.body.appendChild(area);
+    area.select();
+    try { if (document.execCommand('copy')) resolve(); else reject(new Error('copy failed')); }
+    catch (e) { reject(e); }
+    finally { area.remove(); }
+  });
+}
+
+// Briefly show a confirmation on a button's label, then restore it.
+function flashLabel(button, key) {
+  var label = button.querySelector('.btn-label');
+  if (!label) return;
+  var original = button.getAttribute('data-label-key') || label.getAttribute('data-i18n');
+  button.setAttribute('data-label-key', original);
+  setText(label, key);
+  button.classList.add('is-done');
+  announce(t(key));
+  clearTimeout(button._flashTimer);
+  button._flashTimer = setTimeout(function () {
+    setText(label, original);
+    button.classList.remove('is-done');
+  }, 2200);
+}
+
+/* ---------- attribution: which campaign/site brought this visit ---------- */
+// First touch per browser session. Sent with form submissions so each signup
+// shows where it came from (e.g. ?utm_source=tiktok&utm_medium=bio).
+var Attribution = (function () {
+  var KEY = 'moonchies_attr';
+  var stored = {};
+  try { stored = JSON.parse(window.sessionStorage.getItem(KEY) || '{}') || {}; } catch (e) { stored = {}; }
+
+  var params = new URLSearchParams(window.location.search);
+  var fromUrl = {};
+  ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function (name) {
+    var value = params.get(name);
+    if (value) fromUrl[name] = value.slice(0, 100);
+  });
+
+  var referrer = '';
+  try {
+    if (document.referrer) {
+      var host = new URL(document.referrer).hostname;
+      if (host && host !== window.location.hostname) referrer = host;
+    }
+  } catch (e) { /* malformed referrer */ }
+
+  var data = stored;
+  if (Object.keys(fromUrl).length) data = Object.assign({}, fromUrl, { referido: stored.referido || referrer });
+  else if (!stored.referido && referrer) data = Object.assign({}, stored, { referido: referrer });
+
+  try { window.sessionStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* storage blocked */ }
+  return data;
+})();
+
+/* ---------- Netlify forms: validation, loading state, AJAX submit ---------- */
+var EMAIL_DOMAIN_FIXES = {
+  'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gamil.com': 'gmail.com', 'gmal.com': 'gmail.com',
+  'gmail.co': 'gmail.com', 'gmail.con': 'gmail.com', 'gmail.cm': 'gmail.com', 'gnail.com': 'gmail.com',
+  'hotmial.com': 'hotmail.com', 'hotmai.com': 'hotmail.com', 'hotmail.co': 'hotmail.com', 'hotmail.con': 'hotmail.com',
+  'yahooo.com': 'yahoo.com', 'yaho.com': 'yahoo.com', 'yahoo.co': 'yahoo.com', 'yahoo.con': 'yahoo.com',
+  'outlok.com': 'outlook.com', 'outlook.co': 'outlook.com', 'outlook.con': 'outlook.com',
+  'iclod.com': 'icloud.com', 'icloud.co': 'icloud.com', 'icloud.con': 'icloud.com'
+};
+
+function fieldProblem(field) {
+  var value = field.value.trim();
+  if (field.getAttribute('data-validate') === 'email') {
+    if (!value) return 'form.email_required';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) return 'form.email_invalid';
+    return '';
+  }
+  return value ? '' : 'form.idea_required';
+}
+
+function showFieldProblem(field, key) {
+  var error = document.getElementById(field.getAttribute('aria-describedby'));
+  if (key) {
+    field.setAttribute('aria-invalid', 'true');
+    if (error) { setText(error, key); error.hidden = false; }
+  } else {
+    field.removeAttribute('aria-invalid');
+    if (error) { error.removeAttribute('data-i18n'); error.textContent = ''; error.hidden = true; }
+  }
+}
+
+function suggestEmail(field) {
+  var box = document.getElementById('email-suggest');
+  if (!box) return;
+  var value = field.value.trim();
+  var at = value.lastIndexOf('@');
+  var fix = at > 0 ? EMAIL_DOMAIN_FIXES[value.slice(at + 1).toLowerCase()] : null;
+  box.textContent = '';
+  box.hidden = !fix;
+  if (!fix) return;
+  var corrected = value.slice(0, at + 1) + fix;
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'text-btn email-suggest';
+  var prefix = document.createElement('span');
+  prefix.setAttribute('data-i18n', 'form.email_suggest');
+  prefix.textContent = t('form.email_suggest');
+  var strong = document.createElement('strong');
+  strong.textContent = corrected;
+  button.appendChild(prefix);
+  button.appendChild(document.createTextNode(' '));
+  button.appendChild(strong);
+  button.appendChild(document.createTextNode('?'));
+  button.addEventListener('click', function () {
+    field.value = corrected;
+    box.hidden = true;
+    box.textContent = '';
+    showFieldProblem(field, '');
+    field.focus();
+  });
+  box.appendChild(button);
+}
+
+function wireNetlifyForm(formId, confirmId, onSuccess) {
+  var form = document.getElementById(formId);
+  var confirmEl = document.getElementById(confirmId);
+  if (!form || !confirmEl) return;
+  var submit = form.querySelector('[type="submit"]');
+  var label = submit.querySelector('.btn-label');
+  var labelKey = label.getAttribute('data-i18n');
+  var fields = form.querySelectorAll('[data-validate]');
+  var sending = false;
+
+  // Script-driven validation replaces the browser bubbles (which ignore the page language).
+  form.setAttribute('novalidate', '');
+
+  fields.forEach(function (field) {
+    field.addEventListener('input', function () {
+      if (field.getAttribute('aria-invalid') === 'true') showFieldProblem(field, fieldProblem(field));
+    });
+    if (field.getAttribute('data-validate') === 'email') {
+      field.addEventListener('blur', function () { suggestEmail(field); });
+    }
+  });
+
+  function setBusy(busy) {
+    submit.disabled = busy;
+    submit.classList.toggle('is-busy', busy);
+    submit.setAttribute('aria-busy', String(busy));
+    setText(label, busy ? 'form.sending' : labelKey);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (sending) return;
+
+    var firstBad = null;
+    fields.forEach(function (field) {
+      var key = fieldProblem(field);
+      showFieldProblem(field, key);
+      if (key && !firstBad) firstBad = field;
+    });
+    if (firstBad) { firstBad.focus(); return; }
+
+    var context = {
+      idioma: document.documentElement.lang,
+      utm_source: Attribution.utm_source || '',
+      utm_medium: Attribution.utm_medium || '',
+      utm_campaign: Attribution.utm_campaign || '',
+      referido: Attribution.referido || ''
+    };
+    Object.keys(context).forEach(function (name) {
+      if (form.elements[name]) form.elements[name].value = context[name];
+    });
+
+    sending = true;
+    setBusy(true);
+    confirmEl.classList.remove('show', 'error');
+
+    var controller = 'AbortController' in window ? new AbortController() : null;
+    var timeout = setTimeout(function () { if (controller) controller.abort(); }, 15000);
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString(),
+      signal: controller ? controller.signal : undefined
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('bad status ' + res.status);
+        form.reset();
+        form.hidden = true;
+        confirmEl.classList.add('show');
+        confirmEl.focus();
+        if (onSuccess) onSuccess();
+      })
+      .catch(function () {
+        // Keep what the person typed; show a recoverable error below the form.
+        confirmEl.classList.add('show', 'error');
+        announce(t('form.error'));
+      })
+      .then(function () {
+        clearTimeout(timeout);
+        sending = false;
+        setBusy(false);
+      });
+  });
+}
+
+wireNetlifyForm('waitlistForm', 'waitlistConfirm', function () {
+  if (window.MoonchiesTrack) window.MoonchiesTrack('waitlist-signup');
+});
+wireNetlifyForm('suggestForm', 'suggestConfirm', function () {
+  if (window.MoonchiesTrack) window.MoonchiesTrack('idea-sent');
+});
+
+(function () {
+  var again = document.getElementById('suggestAgain');
+  if (!again) return;
+  again.addEventListener('click', function () {
+    var form = document.getElementById('suggestForm');
+    document.getElementById('suggestConfirm').classList.remove('show', 'error');
+    form.hidden = false;
+    form.querySelector('textarea').focus();
+  });
+})();
+
+/* ---------- copy email, share ---------- */
+document.querySelectorAll('.copy-btn[data-copy]').forEach(function (button) {
+  button.addEventListener('click', function () {
+    copyText(button.getAttribute('data-copy'))
+      .then(function () {
+        flashLabel(button, 'contact.copied');
+        if (window.MoonchiesTrack) window.MoonchiesTrack('email-copied');
+      })
+      .catch(function () { flashLabel(button, 'contact.copy_failed'); });
+  });
+});
+
+document.querySelectorAll('.share-btn').forEach(function (button) {
+  button.addEventListener('click', function () {
+    var isEpisode = button.getAttribute('data-share') === 'episode';
+    var titleEl = document.getElementById(button.getAttribute('data-share-title-id') || '');
+    var data = isEpisode
+      ? { title: 'Will It Freeze Dry? — ' + (titleEl ? titleEl.textContent : 'Moonchies'), url: button.getAttribute('data-share-url') }
+      : { title: 'Moonchies', text: t('share.site_text'), url: 'https://moonchiespr.com/' };
+
+    if (window.MoonchiesTrack) window.MoonchiesTrack(isEpisode ? 'share-episode' : 'share-site');
+
+    if (navigator.share) {
+      navigator.share(data).catch(function () { /* closed the share sheet */ });
+      return;
+    }
+    copyText(data.url)
+      .then(function () { flashLabel(button, 'share.copied'); })
+      .catch(function () { flashLabel(button, 'contact.copy_failed'); });
+  });
+});
