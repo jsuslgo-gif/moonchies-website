@@ -881,6 +881,21 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
   .sticker--contact { left: auto; right: -2rem; width: 7rem; }
 }
 
+/* ---------- privacy (legal) ---------- */
+.legal { max-width: 40rem; margin: 0 auto; padding: 3.5rem 1.25rem 4rem; }
+.legal h1 { font-size: clamp(2.2rem, 7vw, 3rem); margin-bottom: 0.4rem; }
+.legal-updated { font-size: 0.85rem; color: var(--dust); margin: 0 0 1.8rem; }
+.legal .lede { margin-bottom: 2.4rem; }
+.legal h2 { font-size: 1.25rem; margin: 2.2rem 0 0.5rem; }
+.legal p { margin: 0 0 0.8rem; }
+.legal a:not(.social-pill) { color: var(--candy-lime); font-weight: 600; text-underline-offset: 3px; }
+.legal-back { margin-top: 2.6rem !important; }
+
+.privacy-note { margin: 0.5rem 0 0; font-size: 0.82rem; }
+.privacy-note a, .footer-legal a { color: var(--dust); text-underline-offset: 3px; }
+.privacy-note a:hover, .footer-legal a:hover { color: var(--frost); }
+.footer-legal { margin: 1.2rem auto 0; font-size: 0.82rem; }
+
 /* ---------- 404 ---------- */
 .notfound {
   min-height: calc(100svh - 12rem);

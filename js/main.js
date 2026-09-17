@@ -1,5 +1,12 @@
 document.documentElement.classList.add('js');
 
+// Umami (cookieless, aggregate). No-ops until its script has loaded or if blocked.
+window.MoonchiesTrack = function (name, data) {
+  try {
+    if (window.umami && typeof window.umami.track === 'function') window.umami.track(name, data);
+  } catch (e) { /* analytics must never break the page */ }
+};
+
 /* ---------- starfield background ---------- */
 // The canvas only covers the viewport. Star positions are stored normalized
 // (0–1) so a mobile URL bar showing/hiding doesn't reshuffle the sky, and a
@@ -215,6 +222,28 @@ var I18N = {
     'waitlist.disclaimer': 'Por ahora no vendemos nada — esto es lista de espera y contenido. La tienda llega en la próxima fase.',
     'footer.tagline': 'Hecho en Puerto Rico. Probado en el vacío.',
     'footer.credit': 'Ilustración de marca por',
+    'waitlist.privacy': 'Cómo usamos tu correo',
+    'footer.privacy': 'Privacidad',
+    'privacy.meta_title': 'Privacidad — Moonchies',
+    'privacy.title': 'Privacidad',
+    'privacy.updated': 'Última actualización: 16 de septiembre de 2026',
+    'privacy.intro': 'Moonchies es una marca pequeña de Puerto Rico. Recogemos lo mínimo y no vendemos ni compartimos tus datos con nadie.',
+    'privacy.waitlist_title': 'Lista de espera',
+    'privacy.waitlist_body': 'Si te unes, guardamos tu correo y las opciones que marques en el formulario. Lo usamos solo para avisarte cuando lancemos.',
+    'privacy.ideas_title': 'Ideas que nos mandas',
+    'privacy.ideas_body': 'Si nos sugieres algo para liofilizar, guardamos el texto que escribiste.',
+    'privacy.context_title': 'Lo que acompaña cada formulario',
+    'privacy.context_body': 'El idioma en que viste el sitio y, si llegaste desde otro sitio o un enlace de campaña, de dónde vino (por ejemplo, TikTok). Nos ayuda a saber qué publicaciones funcionan.',
+    'privacy.stats_title': 'Estadísticas de visitas',
+    'privacy.stats_body': 'Usamos Umami, una herramienta que no usa cookies ni te identifica. Vemos números en conjunto: cuántas visitas hay, qué secciones se ven, de qué sitio llega la gente, el país aproximado y el tipo de dispositivo. No vemos quién eres. Si tu navegador tiene activado «Do Not Track», no contamos tu visita.',
+    'privacy.browser_title': 'En tu navegador',
+    'privacy.browser_body': 'Guardamos tu idioma preferido en tu propio navegador, y durante la visita, de qué enlace llegaste. No son cookies y no salen de tu dispositivo hasta que envías un formulario.',
+    'privacy.where_title': 'Dónde se guarda',
+    'privacy.where_body': 'Los formularios los recibe Netlify, el servicio donde está alojado este sitio. Las estadísticas las procesa Umami Cloud.',
+    'privacy.rights_title': 'Tus datos, tu decisión',
+    'privacy.rights_body': '¿Quieres que borremos tu correo o lo que nos enviaste? Escríbenos y lo eliminamos:',
+    'privacy.changes_title': 'Cambios',
+    'privacy.changes_body': 'Si cambiamos algo aquí, actualizamos la fecha de arriba.',
     'form.error': 'No se pudo enviar. Revisa tu conexión e intenta de nuevo; lo que escribiste sigue ahí. Si sigue fallando, escríbenos por Instagram.',
     'notfound.meta_title': 'Página no encontrada — Moonchies',
     'notfound.title': 'Aquí no quedó nada.',
@@ -337,6 +366,28 @@ var I18N = {
     'waitlist.disclaimer': "We're not selling anything yet — this is just the waitlist and content. The store is coming in the next phase.",
     'footer.tagline': 'Made in Puerto Rico. Tested in a vacuum.',
     'footer.credit': 'Brand illustration by',
+    'waitlist.privacy': 'How we use your email',
+    'footer.privacy': 'Privacy',
+    'privacy.meta_title': 'Privacy — Moonchies',
+    'privacy.title': 'Privacy',
+    'privacy.updated': 'Last updated: September 16, 2026',
+    'privacy.intro': "Moonchies is a small brand from Puerto Rico. We collect the minimum, and we don't sell or share your data with anyone.",
+    'privacy.waitlist_title': 'Waitlist',
+    'privacy.waitlist_body': "If you join, we keep your email and the options you check on the form. We only use it to let you know when we launch.",
+    'privacy.ideas_title': 'Ideas you send us',
+    'privacy.ideas_body': 'If you suggest something to freeze-dry, we keep the text you wrote.',
+    'privacy.context_title': 'What comes with each form',
+    'privacy.context_body': 'The language you viewed the site in and, if you arrived from another site or a campaign link, where you came from (for example, TikTok). It helps us know which posts work.',
+    'privacy.stats_title': 'Visit statistics',
+    'privacy.stats_body': "We use Umami, a tool that doesn't use cookies or identify you. We see totals: how many visits, which sections get seen, which site people come from, approximate country and device type. We don't see who you are. If your browser has \u201cDo Not Track\u201d turned on, your visit isn't counted.",
+    'privacy.browser_title': 'In your browser',
+    'privacy.browser_body': "We save your preferred language in your own browser and, during your visit, which link brought you here. These aren't cookies, and they don't leave your device unless you send a form.",
+    'privacy.where_title': "Where it's stored",
+    'privacy.where_body': 'Forms are received by Netlify, the service that hosts this site. Statistics are processed by Umami Cloud.',
+    'privacy.rights_title': 'Your data, your call',
+    'privacy.rights_body': "Want us to delete your email or anything you sent? Write to us and we'll delete it:",
+    'privacy.changes_title': 'Changes',
+    'privacy.changes_body': 'If we change anything here, we update the date at the top.',
     'form.error': "Couldn't send. Check your connection and try again; what you wrote is still there. If it keeps failing, message us on Instagram.",
     'notfound.meta_title': 'Page not found — Moonchies',
     'notfound.title': 'Nothing left here.',
@@ -384,7 +435,9 @@ function writeStorage(key, value) {
 
   if (toggle) {
     toggle.addEventListener('click', function () {
-      applyLang(document.documentElement.lang === 'en' ? 'es' : 'en');
+      var next = document.documentElement.lang === 'en' ? 'es' : 'en';
+      applyLang(next);
+      window.MoonchiesTrack('language-switch', { to: next });
     });
   }
 })();
