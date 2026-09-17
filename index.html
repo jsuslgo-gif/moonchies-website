@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moonchies — Boricuas hasta en la luna</title>
+<title data-i18n="meta.title">Moonchies — Boricuas hasta en la luna</title>
 <meta name="description" content="Moonchies liofiliza lo cotidiano y documenta qué pasa. Will It Freeze Dry, lista de espera y la historia detrás del nombre — desde Puerto Rico.">
 <link rel="canonical" href="https://moonchiespr.com/">
+<meta name="theme-color" content="#06022b">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Moonchies">
@@ -23,10 +24,30 @@
 <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <link rel="stylesheet" href="css/style.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Moonchies",
+  "url": "https://moonchiespr.com/",
+  "logo": "https://moonchiespr.com/images/logo-circular.png",
+  "email": "moonchies.pr@gmail.com",
+  "description": "Snacks liofilizados desde Puerto Rico. Will It Freeze Dry: cada experimento, documentado.",
+  "foundingLocation": { "@type": "Place", "name": "Puerto Rico" },
+  "sameAs": [
+    "https://instagram.com/moonchiespr",
+    "https://www.tiktok.com/@moonchiespr",
+    "https://facebook.com/moonchies.pr"
+  ]
+}
+</script>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
+<a class="skip-link" href="#contenido" data-i18n="a11y.skip">Saltar al contenido</a>
+
+<canvas id="stars" aria-hidden="true"></canvas>
 
 <div class="page">
 
@@ -40,6 +61,8 @@
       <a class="nav-cta" href="#waitlist" data-i18n="nav.cta">Lista de espera</a>
     </div>
   </header>
+
+  <main id="contenido" tabindex="-1">
 
   <section class="hero" id="top">
     <div class="hero-badge">
@@ -59,12 +82,12 @@
 
     <picture>
       <source srcset="images/logo-oficial.webp" type="image/webp">
-      <img class="hero-logo" src="images/logo-oficial.png" width="576" height="700"
+      <img class="hero-logo" src="images/logo-oficial.png" width="576" height="700" fetchpriority="high"
            data-i18n-alt="hero.logo_alt"
            alt="Astronauta Moonchies flotando en el espacio con bandera de Puerto Rico, rodeado de dulces — ilustración de @dontouchmyink">
     </picture>
 
-    <img class="sticker sticker--skittles sticker--hero" src="images/sticker-skittles.webp" alt="" aria-hidden="true" loading="lazy" width="120" height="120">
+    <img class="sticker sticker--skittles sticker--hero" src="images/sticker-skittles.webp" alt="" aria-hidden="true" width="120" height="120">
   </section>
 
   <svg class="divider" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0,20 C100,40 300,0 400,20" fill="none" stroke="currentColor" stroke-width="1"/></svg>
@@ -281,6 +304,8 @@
 
     <img class="sticker sticker--skittles sticker--contact" src="images/sticker-skittles.webp" alt="" aria-hidden="true" loading="lazy" width="120" height="120">
   </section>
+
+  </main>
 
   <svg class="divider" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0,20 C100,0 300,40 400,20" fill="none" stroke="currentColor" stroke-width="1"/></svg>
 

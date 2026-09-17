@@ -1,49 +1,106 @@
 /* ---------- starfield background ---------- */
+// The canvas only covers the viewport. Star positions are stored normalized
+// (0–1) so a mobile URL bar showing/hiding doesn't reshuffle the sky, and a
+// slow scroll parallax keeps the feeling of drifting through space without
+// painting a document-tall canvas every frame.
 (function () {
   var canvas = document.getElementById('stars');
+  if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
-  var stars = [];
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CANDY = ['255, 111, 156', '255, 154, 77', '165, 224, 90', '178, 133, 232'];
+  var FRAME_MS = 1000 / 30;
+  var stars = [];
+  var width = 0;
+  var height = 0;
+  var lastFrame = 0;
+  var rafId = null;
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = document.body.scrollHeight;
-    var count = Math.floor((canvas.width * canvas.height) / 9000);
+  function seed() {
+    var count = Math.min(320, Math.round((canvas.clientWidth * canvas.clientHeight) / 9000));
     stars = [];
     for (var i = 0; i < count; i++) {
       stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random(),
+        y: Math.random(),
         r: Math.random() * 1.2 + 0.3,
+        depth: 0.25 + Math.random() * 0.75,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.01 + Math.random() * 0.02
+        speed: 0.0006 + Math.random() * 0.0012,
+        color: Math.random() < 0.04 ? CANDY[i % CANDY.length] : '214, 231, 241'
       });
     }
   }
 
-  function draw(t) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (var i = 0; i < stars.length; i++) {
-      var s = stars[i];
-      var alpha = reduced ? 0.55 : 0.35 + 0.45 * Math.abs(Math.sin(s.phase + t * s.speed));
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(214, 231, 241, ' + alpha + ')';
-      ctx.fill();
-    }
-    if (!reduced) requestAnimationFrame(draw);
+  function size() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // clientWidth excludes the scrollbar, so stars aren't stretched sideways
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  resize();
-  window.addEventListener('resize', resize);
-  window.addEventListener('load', resize);
-  requestAnimationFrame(draw);
-  if (reduced) draw(0);
+  function draw(t) {
+    var scroll = reduced ? 0 : window.scrollY;
+    ctx.clearRect(0, 0, width, height);
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      var y = (s.y * height - scroll * s.depth * 0.06) % height;
+      if (y < 0) y += height;
+      var alpha = reduced ? 0.55 : 0.35 + 0.45 * Math.abs(Math.sin(s.phase + t * s.speed));
+      ctx.beginPath();
+      ctx.arc(s.x * width, y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + s.color + ', ' + alpha + ')';
+      ctx.fill();
+    }
+  }
+
+  function loop(t) {
+    rafId = requestAnimationFrame(loop);
+    if (t - lastFrame < FRAME_MS) return;
+    lastFrame = t;
+    draw(t);
+  }
+
+  function start() {
+    if (reduced) { draw(0); return; }
+    if (rafId === null) rafId = requestAnimationFrame(loop);
+  }
+
+  function stop() {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  var lastWidth = canvas.clientWidth;
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      // Re-seed only when the width really changes (rotation, window resize),
+      // not when a phone's URL bar collapses and nudges the height.
+      if (canvas.clientWidth !== lastWidth) { lastWidth = canvas.clientWidth; seed(); }
+      size();
+      if (reduced) draw(0);
+    }, 150);
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stop(); else start();
+  });
+
+  seed();
+  size();
+  start();
 })();
 
 /* ---------- i18n ---------- */
 var I18N = {
   es: {
+    'meta.title': 'Moonchies — Boricuas hasta en la luna',
+    'a11y.skip': 'Saltar al contenido',
     'nav.cta': 'Lista de espera',
     'hero.badge': 'Hecho en Puerto Rico',
     'hero.tagline': 'Boricuas hasta en la luna.',
@@ -108,9 +165,16 @@ var I18N = {
     'waitlist.disclaimer': 'Por ahora no vendemos nada — esto es lista de espera y contenido. La tienda llega en la próxima fase.',
     'footer.tagline': 'Hecho en Puerto Rico. Probado en el vacío.',
     'footer.credit': 'Ilustración de marca por',
-    'form.error': 'Algo salió mal. Intenta de nuevo o escríbenos por Instagram.'
+    'form.error': 'Algo salió mal. Intenta de nuevo o escríbenos por Instagram.',
+    'notfound.meta_title': 'Página no encontrada — Moonchies',
+    'notfound.title': 'Aquí no quedó nada.',
+    'notfound.body': 'Esta página no existe — o la liofilizamos de más. Vuelve al inicio o mira los experimentos.',
+    'notfound.home': 'Volver al inicio',
+    'notfound.episodes': 'Ver los experimentos'
   },
   en: {
+    'meta.title': 'Moonchies — Boricua, even on the moon',
+    'a11y.skip': 'Skip to content',
     'nav.cta': 'Waitlist',
     'hero.badge': 'Made in Puerto Rico',
     'hero.tagline': 'Boricua, even on the moon.',
@@ -175,14 +239,21 @@ var I18N = {
     'waitlist.disclaimer': "We're not selling anything yet — this is just the waitlist and content. The store is coming in the next phase.",
     'footer.tagline': 'Made in Puerto Rico. Tested in a vacuum.',
     'footer.credit': 'Brand illustration by',
-    'form.error': 'Something went wrong. Please try again or message us on Instagram.'
+    'form.error': 'Something went wrong. Please try again or message us on Instagram.',
+    'notfound.meta_title': 'Page not found — Moonchies',
+    'notfound.title': 'Nothing left here.',
+    'notfound.body': "This page doesn't exist — or we freeze-dried it a little too long. Head back home or check out the experiments.",
+    'notfound.home': 'Back to home',
+    'notfound.episodes': 'See the experiments'
   }
 };
 
-var TITLES = {
-  es: 'Moonchies — Boricuas hasta en la luna',
-  en: 'Moonchies — Boricua, even on the moon'
-};
+function readStorage(key) {
+  try { return window.localStorage.getItem(key); } catch (e) { return null; }
+}
+function writeStorage(key, value) {
+  try { window.localStorage.setItem(key, value); } catch (e) { /* storage blocked: preference just won't persist */ }
+}
 
 (function () {
   var STORAGE_KEY = 'moonchies_lang';
@@ -194,34 +265,28 @@ var TITLES = {
       var key = el.getAttribute('data-i18n');
       if (dict[key] !== undefined) el.textContent = dict[key];
     });
-    document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
-      var key = el.getAttribute('data-i18n-alt');
-      if (dict[key] !== undefined) el.setAttribute('alt', dict[key]);
-    });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
-      var key = el.getAttribute('data-i18n-placeholder');
-      if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
-    });
-    document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
-      var key = el.getAttribute('data-i18n-aria-label');
-      if (dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
+    ['alt', 'placeholder', 'aria-label'].forEach(function (attr) {
+      document.querySelectorAll('[data-i18n-' + attr + ']').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-' + attr);
+        if (dict[key] !== undefined) el.setAttribute(attr, dict[key]);
+      });
     });
     document.documentElement.lang = lang;
-    document.title = TITLES[lang];
-    var nextLang = lang === 'es' ? 'en' : 'es';
-    toggle.textContent = nextLang.toUpperCase();
-    toggle.setAttribute('aria-label', lang === 'es' ? 'Switch to English' : 'Cambiar a español');
-    localStorage.setItem(STORAGE_KEY, lang);
+    if (toggle) {
+      toggle.textContent = lang === 'es' ? 'EN' : 'ES';
+      toggle.setAttribute('aria-label', lang === 'es' ? 'Switch to English' : 'Cambiar a español');
+    }
+    writeStorage(STORAGE_KEY, lang);
   }
 
-  var saved = localStorage.getItem(STORAGE_KEY);
-  var initialLang = (saved === 'en' || saved === 'es') ? saved : 'es';
-  applyLang(initialLang);
+  var saved = readStorage(STORAGE_KEY);
+  applyLang(saved === 'en' || saved === 'es' ? saved : 'es');
 
-  toggle.addEventListener('click', function () {
-    var current = document.documentElement.lang === 'en' ? 'en' : 'es';
-    applyLang(current === 'es' ? 'en' : 'es');
-  });
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      applyLang(document.documentElement.lang === 'en' ? 'es' : 'en');
+    });
+  }
 })();
 
 /* ---------- Netlify forms (AJAX submit) ---------- */

@@ -19,6 +19,18 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 
+html {
+  color-scheme: dark;
+  scrollbar-color: color-mix(in srgb, var(--nebula) 70%, var(--space-black)) var(--space-black);
+  scroll-padding-top: 5rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+::selection { background: var(--candy-pink); color: var(--space-black); }
+input, textarea { caret-color: var(--candy-orange); }
+
 body {
   background: var(--space-black);
   color: var(--frost);
@@ -36,6 +48,24 @@ a { color: inherit; }
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
 
+.skip-link {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 100;
+  background: var(--candy-orange);
+  color: var(--space-black);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transform: translateY(-160%);
+}
+.skip-link:focus { transform: none; }
+
+main:focus { outline: none; }
+
 .visually-hidden {
   position: absolute;
   width: 1px; height: 1px;
@@ -48,11 +78,13 @@ a { color: inherit; }
 #stars {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   pointer-events: none;
 }
 
-.page { position: relative; z-index: 1; }
+.page { position: relative; z-index: 1; overflow-x: clip; }
 
 /* ---------- nav ---------- */
 header.nav {
@@ -178,12 +210,12 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
 .hero-logo { width: min(78vw, 24rem); height: auto; margin-top: 0.5rem; }
 
 /* ---------- historia del nombre ---------- */
-.story p {
+.story p:not(.eyebrow) {
   font-size: 1.1rem;
   max-width: 34rem;
   margin: 0 0 0.85rem;
 }
-.story p:first-child {
+.story .eyebrow + p {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(1.5rem, 5vw, 2rem);
@@ -437,6 +469,49 @@ p.lede { font-size: 1.15rem; color: var(--frost); opacity: 0.92; }
   .sticker--contact { right: -2rem; width: 7rem; }
 }
 
+/* ---------- 404 ---------- */
+.notfound {
+  min-height: calc(100svh - 12rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.25rem 4rem;
+}
+.notfound-astronaut {
+  width: min(52vw, 13rem);
+  height: auto;
+  margin-bottom: 1.5rem;
+  animation: sticker-float 7s ease-in-out infinite;
+  --sticker-rot: 8deg;
+}
+.notfound-code {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  color: var(--candy-orange);
+  margin: 0 0 0.6rem;
+}
+.notfound h1 { max-width: 16ch; }
+.notfound .lede { margin: 0 auto 2rem; max-width: 30rem; }
+.notfound-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
+.btn-primary {
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: var(--candy-orange);
+  color: var(--space-black);
+  border-radius: 999px;
+  padding: 0.75rem 1.3rem;
+  text-decoration: none;
+}
+.btn-primary:hover { background: color-mix(in srgb, var(--candy-orange) 85%, white); }
+.notfound-actions .social-pill { font-size: 0.95rem; padding: 0.75rem 1.3rem; }
+@media (prefers-reduced-motion: reduce) {
+  .notfound-astronaut { animation: none; }
+}
+
 /* ---------- footer ---------- */
 footer { border-top: 1px solid var(--edge); padding: 3rem 1.25rem 2.5rem; text-align: center; }
 footer .wordmark { justify-content: center; margin: 0 auto 0.8rem; }
@@ -448,3 +523,20 @@ footer p.tagline { margin: 0 auto; font-size: 0.88rem; }
 .credit { font-size: 0.78rem; color: var(--dust); margin-top: 1.6rem; }
 .credit a { color: var(--dust); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 .credit a:hover { color: var(--candy-lime); }
+
+/* ---------- print ---------- */
+@media print {
+  html, body { background: #fff !important; color: #111 !important; }
+  #stars, .skip-link, header.nav, .divider, .sticker, .wifd-play, .wifd-like,
+  form, .form-confirm, #sugerencias, .notfound-actions { display: none !important; }
+  * { box-shadow: none !important; text-shadow: none !important; animation: none !important; }
+  section { max-width: none; padding: 1.2rem 0; break-inside: avoid-page; }
+  body * { color: #111 !important; }
+  .hero-logo { width: 9rem; }
+  .panel, .contact-row, .social-pill { border-color: #bbb; background: none; color: #111; }
+  .wifd-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  .wifd-tile { aspect-ratio: auto; min-height: 0; background: none; border-color: #bbb; break-inside: avoid; display: block; padding: 0.6rem; }
+  .wifd-thumb, .wifd-tile.has-thumb::after { display: none; }
+  a[href^="http"]::after, a[href^="mailto"]::after { content: " (" attr(href) ")"; font-size: 0.75em; font-weight: 400; word-break: break-all; }
+  .wordmark::after, .contact-row::after { content: none !important; }
+}
