@@ -1,3 +1,17 @@
+/* Unbounded (headlines) and Silkscreen (short labels): SIL Open Font License, see /fonts/OFL-*.txt */
+@font-face {
+  font-family: "Unbounded";
+  src: url("../fonts/unbounded-latin.woff2") format("woff2");
+  font-weight: 200 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Silkscreen";
+  src: url("../fonts/silkscreen-700-latin.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   --space-void: #0d0254;
   --space-black: #06022b;
@@ -9,7 +23,8 @@
   --candy-lime: #a5e05a;
   --candy-violet: #b285e8;
 
-  --font-display: ui-rounded, "SF Pro Rounded", "Segoe UI Rounded", "Nunito", "Arial Rounded MT Bold", sans-serif;
+  --font-display: "Unbounded", ui-rounded, "SF Pro Rounded", "Segoe UI Rounded", "Arial Rounded MT Bold", sans-serif;
+  --font-label: "Silkscreen", ui-monospace, monospace;
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   --edge: color-mix(in srgb, var(--nebula) 45%, transparent);
@@ -974,3 +989,55 @@ footer p.tagline { margin: 0 auto; font-size: 0.88rem; }
   a[href^="http"]::after, a[href^="mailto"]::after { content: " (" attr(href) ")"; font-size: 0.75em; font-weight: 400; word-break: break-all; }
   .wordmark::after, .contact-row::after { content: none !important; }
 }
+
+/* ---------- type system: Unbounded headlines, Silkscreen labels ---------- */
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+h1 { font-size: clamp(2.05rem, 7.2vw, 3.4rem); line-height: 1.08; }
+h2 { font-size: clamp(1.55rem, 5vw, 2.15rem); line-height: 1.15; }
+
+.eyebrow, .hero-badge, .wifd-tile-tag, .wifd-badge, .purpose-label, .notfound-code, .wordmark-text {
+  font-family: var(--font-label);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.eyebrow, .wifd-tile-tag, .purpose-label { font-size: 0.8125rem; }
+.hero-badge, .wifd-badge { font-size: 0.75rem; }
+.notfound-code { font-size: 1rem; letter-spacing: 0.2em; }
+.wordmark { font-family: var(--font-label); font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; }
+.story .eyebrow + p { letter-spacing: -0.02em; }
+
+/* ---------- FAQ ---------- */
+:root { interpolate-size: allow-keywords; }
+.faq { margin-top: 1.8rem; border-top: 1px solid var(--edge); }
+.faq-item { border-bottom: 1px solid var(--edge); }
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 0.1rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--frost);
+  transition: color 0.2s ease-out;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:focus-visible { outline-offset: 4px; border-radius: 0.3rem; }
+.faq-icon { flex: none; color: var(--candy-orange); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.faq-item[open] .faq-icon { transform: rotate(45deg); }
+@media (hover: hover) {
+  .faq-item summary:hover { color: var(--candy-orange); }
+}
+.faq-item p { margin: 0 0 1.25rem; padding-right: 2rem; font-size: 1rem; }
+.faq-item::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size 0.35s cubic-bezier(0.16, 1, 0.3, 1), content-visibility 0.35s allow-discrete;
+}
+.faq-item[open]::details-content { block-size: auto; }

@@ -186,6 +186,19 @@ var I18N = {
     'wifd.ep10_title': 'Roll-ups — sin agua',
     'wifd.ep10_body': 'Fruit roll-ups sin una gota de agua. Jamás nos hubiéramos imaginado cómo iban a quedar.',
     'wifd.ep10_alt': 'Miniatura del video de TikTok: fruit roll-ups liofilizados',
+    'nav.faq': 'Preguntas',
+    'faq.eyebrow': 'Preguntas',
+    'faq.title': 'Antes de que preguntes',
+    'faq.q1': '¿Qué es liofilizar?',
+    'faq.a1': 'Es sacarle el agua a la comida congelándola y poniéndola al vacío. El hielo pasa a vapor sin derretirse, y lo que queda mantiene su forma con otra textura: crujiente, liviana, a veces irreconocible. Es la técnica de la comida que va al espacio.',
+    'faq.q2': '¿Ya puedo comprar?',
+    'faq.a2': 'Todavía no. Estamos resolviendo el empaque para que todo llegue como tiene que llegar. Cuando abra la tienda, la lista de espera se entera primero.',
+    'faq.q3': '¿Qué van a vender?',
+    'faq.a3': 'Para empezar, dulces, mantecados y frutas liofilizadas. Tenemos ideas para mucho más, pero vamos paso a paso.',
+    'faq.q4': '¿Van a enviar fuera de Puerto Rico?',
+    'faq.a4': 'Esa es la idea. Todavía no hay fecha ni detalles; si estás en la lista de espera, te avisamos.',
+    'faq.q5': '¿Cómo los contacto?',
+    'faq.a5': 'Escríbenos a moonchies.pr@gmail.com o por Instagram, TikTok o Facebook, por la razón que sea.',
     'contact.eyebrow': 'Contacto',
     'contact.title': '¿Preguntas? Escríbenos.',
     'contact.lede': 'Por ahora no hay tienda, pero si tienes preguntas o quieres saber más, aquí nos encuentras.',
@@ -330,6 +343,19 @@ var I18N = {
     'wifd.ep10_title': 'Roll-ups — no water',
     'wifd.ep10_body': 'Fruit roll-ups without a drop of water. We never would have imagined how they\'d turn out.',
     'wifd.ep10_alt': 'TikTok video thumbnail: freeze-dried fruit roll-ups',
+    'nav.faq': 'FAQ',
+    'faq.eyebrow': 'Questions',
+    'faq.title': 'Before you ask',
+    'faq.q1': 'What is freeze-drying?',
+    'faq.a1': 'It\'s taking the water out of food by freezing it and putting it under a vacuum. The ice turns straight into vapor without melting, and what\'s left keeps its shape with a whole new texture: crunchy, light, sometimes unrecognizable. It\'s the same technique used for food that goes to space.',
+    'faq.q2': 'Can I buy yet?',
+    'faq.a2': 'Not yet. We\'re sorting out packaging so everything arrives the way it should. When the store opens, the waitlist hears first.',
+    'faq.q3': 'What will you sell?',
+    'faq.a3': 'To start: freeze-dried candy, ice cream and fruit. We have ideas for a lot more, but we\'re taking it one step at a time.',
+    'faq.q4': 'Will you ship outside Puerto Rico?',
+    'faq.a4': 'That\'s the plan. There\'s no date or details yet; if you\'re on the waitlist, we\'ll let you know.',
+    'faq.q5': 'How do I reach you?',
+    'faq.a5': 'Email us at moonchies.pr@gmail.com or message us on Instagram, TikTok or Facebook, for whatever reason.',
     'contact.eyebrow': 'Contact',
     'contact.title': 'Questions? Reach out.',
     'contact.lede': "There's no store yet, but if you have questions or want to know more, here's where to find us.",
@@ -850,5 +876,12 @@ document.querySelectorAll('.share-btn').forEach(function (button) {
     copyText(data.url)
       .then(function () { flashLabel(button, 'share.copied'); })
       .catch(function () { flashLabel(button, 'contact.copy_failed'); });
+  });
+});
+
+/* ---------- FAQ: which questions get opened ---------- */
+document.querySelectorAll('.faq-item').forEach(function (item) {
+  item.addEventListener('toggle', function () {
+    if (item.open) window.MoonchiesTrack('faq-open', { question: item.getAttribute('data-faq') });
   });
 });
