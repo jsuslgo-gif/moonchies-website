@@ -1,3 +1,5 @@
+document.documentElement.classList.add('js');
+
 /* ---------- starfield background ---------- */
 // The canvas only covers the viewport. Star positions are stored normalized
 // (0–1) so a mobile URL bar showing/hiding doesn't reshuffle the sky, and a
@@ -113,6 +115,7 @@ var I18N = {
     'hero.badge': 'Hecho en Puerto Rico',
     'hero.tagline': 'Boricuas hasta en la luna.',
     'hero.lede': 'Comida de otra órbita.',
+    'hero.cta': 'Únete a la lista de espera',
     'hero.logo_alt': 'Astronauta Moonchies flotando en el espacio con bandera de Puerto Rico, rodeado de dulces — ilustración de @dontouchmyink',
     'story.eyebrow': 'La historia del nombre',
     'story.p1': 'Freeze-a-Rican.',
@@ -126,10 +129,16 @@ var I18N = {
     'vision.label': 'Nuestra visión',
     'vision.body': 'Ser la marca que convierte la liofilización en una forma de jugar con la comida — reconocida porque cada experimento es algo que la gente quiere ver, probar y compartir. Que Moonchies signifique curiosidad. Y que se sepa de dónde salió.',
     'wifd.eyebrow': 'La serie',
-    'wifd.lede': '5 episodios y contando — cada experimento, documentado, salga bien o mal.',
-    'wifd.soon': 'Próximamente',
-    'wifd.play_label': 'Ver video en TikTok',
+    'wifd.lede': '10 episodios y contando — cada experimento, documentado, salga bien o mal.',
+    'wifd.play_label': 'Ver en TikTok:',
     'wifd.like_label': 'Dale like en TikTok',
+    'wifd.latest': 'Más reciente',
+    'wifd.watch': 'Ver en TikTok',
+    'wifd.previous': 'Episodios anteriores',
+    'wifd.rail_prev': 'Episodios más recientes',
+    'wifd.rail_next': 'Episodios más viejos',
+    'wifd.waitlist_prompt': '¿Quieres enterarte cuando lancemos?',
+    'wifd.waitlist_cta': 'Únete a la lista de espera',
     'wifd.ep1_tag': 'Episodio 1',
     'wifd.ep1_title': 'Skittles — la primera prueba',
     'wifd.ep1_body': '¿Qué pasa cuando le quitas el agua a un Skittle? Este fue nuestro primer experimento.',
@@ -150,6 +159,26 @@ var I18N = {
     'wifd.ep5_title': 'Pizza — horneada vs. congelada',
     'wifd.ep5_body': 'Una pizza horneada, una congelada, ambas 20 horas en la máquina. No esperábamos este resultado.',
     'wifd.ep5_alt': 'Miniatura del video de TikTok: pizza liofilizada, horneada y congelada',
+    'wifd.ep6_tag': 'Episodio 6',
+    'wifd.ep6_title': 'Skittles — la bolsa entera',
+    'wifd.ep6_body': 'Una bolsa entera, 4 horas en la máquina. Todavía nos sorprende cómo quedan.',
+    'wifd.ep6_alt': 'Miniatura del video de TikTok: una bolsa entera de Skittles liofilizados',
+    'wifd.ep7_tag': 'Episodio 7',
+    'wifd.ep7_title': 'Mantecado — segunda vuelta',
+    'wifd.ep7_body': 'Volvimos a meter mantecado en la máquina. Quedó brutal.',
+    'wifd.ep7_alt': 'Miniatura del video de TikTok: mantecado liofilizado',
+    'wifd.ep8_tag': 'Episodio 8',
+    'wifd.ep8_title': 'Quesitos',
+    'wifd.ep8_body': 'Le quitamos el agua a unos quesitos y quedaron mejor de lo que esperábamos.',
+    'wifd.ep8_alt': 'Miniatura del video de TikTok: quesitos liofilizados',
+    'wifd.ep9_tag': 'Episodio 9',
+    'wifd.ep9_title': 'Refresco — solo quedó el syrup',
+    'wifd.ep9_body': 'Le sacamos el agua a un refresco y quedó solo el syrup. Debimos verlo venir.',
+    'wifd.ep9_alt': 'Miniatura del video de TikTok: refresco liofilizado, solo quedó el syrup',
+    'wifd.ep10_tag': 'Episodio 10',
+    'wifd.ep10_title': 'Roll-ups — sin agua',
+    'wifd.ep10_body': 'Fruit roll-ups sin una gota de agua. Jamás nos hubiéramos imaginado cómo iban a quedar.',
+    'wifd.ep10_alt': 'Miniatura del video de TikTok: fruit roll-ups liofilizados',
     'contact.eyebrow': 'Contacto',
     'contact.title': '¿Preguntas? Escríbenos.',
     'contact.lede': 'Por ahora no hay tienda, pero si tienes preguntas o quieres saber más, aquí nos encuentras.',
@@ -195,6 +224,7 @@ var I18N = {
     'hero.badge': 'Made in Puerto Rico',
     'hero.tagline': 'Boricua, even on the moon.',
     'hero.lede': 'Snacks from another orbit.',
+    'hero.cta': 'Join the waitlist',
     'hero.logo_alt': 'Moonchies astronaut floating in space holding a Puerto Rican flag, surrounded by candy — illustration by @dontouchmyink',
     'story.eyebrow': 'The story behind the name',
     'story.p1': 'Freeze-a-Rican.',
@@ -208,30 +238,56 @@ var I18N = {
     'vision.label': 'Our vision',
     'vision.body': 'To be the brand that turns freeze-drying into a way of playing with food — known because every experiment is something people want to watch, taste, and share. To make Moonchies mean curiosity. And to make sure everyone knows where it came from.',
     'wifd.eyebrow': 'The series',
-    'wifd.lede': '5 episodes and counting — every experiment, documented, win or fail.',
-    'wifd.soon': 'Coming soon',
-    'wifd.play_label': 'Watch video on TikTok',
+    'wifd.lede': '10 episodes and counting — every experiment, documented, win or fail.',
+    'wifd.play_label': 'Watch on TikTok:',
     'wifd.like_label': 'Like on TikTok',
+    'wifd.latest': 'Latest',
+    'wifd.watch': 'Watch on TikTok',
+    'wifd.previous': 'Earlier episodes',
+    'wifd.rail_prev': 'Newer episodes',
+    'wifd.rail_next': 'Older episodes',
+    'wifd.waitlist_prompt': 'Want to know when we launch?',
+    'wifd.waitlist_cta': 'Join the waitlist',
     'wifd.ep1_tag': 'Episode 1',
     'wifd.ep1_title': 'Skittles — the first try',
     'wifd.ep1_body': 'What happens when you take the water out of a Skittle? This was our first experiment.',
     'wifd.ep1_alt': 'TikTok video thumbnail: freeze-dried Skittles, first try',
     'wifd.ep2_tag': 'Episode 2',
     'wifd.ep2_title': 'Skittles — round two',
-    'wifd.ep2_body': "Still dialing in the process — here's how the texture turned out this time.",
+    'wifd.ep2_body': 'Still dialing in the process — here\'s how the texture turned out this time.',
     'wifd.ep2_alt': 'TikTok video thumbnail: freeze-dried Skittles, round two',
     'wifd.ep3_tag': 'Episode 3',
     'wifd.ep3_title': 'Gummy Sharks — the unexpected result',
-    'wifd.ep3_body': "What happens when you take the water out of a gummy shark? We didn't see this coming.",
+    'wifd.ep3_body': 'What happens when you take the water out of a gummy shark? We didn\'t see this coming.',
     'wifd.ep3_alt': 'TikTok video thumbnail: freeze-dried gummy sharks',
     'wifd.ep4_tag': 'Episode 4',
     'wifd.ep4_title': 'Vanilla ice cream, with sprinkles',
-    'wifd.ep4_body': "This is what they eat in space — freeze-dried ice cream, without a drop of water.",
+    'wifd.ep4_body': 'This is what they eat in space — freeze-dried ice cream, without a drop of water.',
     'wifd.ep4_alt': 'TikTok video thumbnail: freeze-dried vanilla ice cream with sprinkles',
     'wifd.ep5_tag': 'Episode 5',
     'wifd.ep5_title': 'Pizza — baked vs. frozen',
-    'wifd.ep5_body': "One baked pizza, one frozen, both 20 hours in the machine. We didn't expect this result.",
+    'wifd.ep5_body': 'One baked pizza, one frozen, both 20 hours in the machine. We didn\'t expect this result.',
     'wifd.ep5_alt': 'TikTok video thumbnail: freeze-dried pizza, baked and frozen versions',
+    'wifd.ep6_tag': 'Episode 6',
+    'wifd.ep6_title': 'Skittles — the whole bag',
+    'wifd.ep6_body': 'A whole bag, 4 hours in the machine. It still surprises us how they turn out.',
+    'wifd.ep6_alt': 'TikTok video thumbnail: a whole bag of freeze-dried Skittles',
+    'wifd.ep7_tag': 'Episode 7',
+    'wifd.ep7_title': 'Ice cream — round two',
+    'wifd.ep7_body': 'We put ice cream back in the machine. It came out incredible.',
+    'wifd.ep7_alt': 'TikTok video thumbnail: freeze-dried ice cream',
+    'wifd.ep8_tag': 'Episode 8',
+    'wifd.ep8_title': 'Quesitos',
+    'wifd.ep8_body': 'We took the water out of some quesitos and they came out better than we expected.',
+    'wifd.ep8_alt': 'TikTok video thumbnail: freeze-dried quesitos',
+    'wifd.ep9_tag': 'Episode 9',
+    'wifd.ep9_title': 'Soda — only the syrup survived',
+    'wifd.ep9_body': 'We took the water out of a soda and only the syrup was left. Should\'ve seen that coming.',
+    'wifd.ep9_alt': 'TikTok video thumbnail: freeze-dried soda, only the syrup left',
+    'wifd.ep10_tag': 'Episode 10',
+    'wifd.ep10_title': 'Roll-ups — no water',
+    'wifd.ep10_body': 'Fruit roll-ups without a drop of water. We never would have imagined how they\'d turn out.',
+    'wifd.ep10_alt': 'TikTok video thumbnail: freeze-dried fruit roll-ups',
     'contact.eyebrow': 'Contact',
     'contact.title': 'Questions? Reach out.',
     'contact.lede': "There's no store yet, but if you have questions or want to know more, here's where to find us.",
@@ -413,20 +469,54 @@ function wireNetlifyForm(formId, confirmId) {
   });
 }
 
-/* ---------- Will It Freeze Dry: open the exact video on TikTok ---------- */
-// Embedding TikTok's video widget inline proved unreliable across browsers
-// (broken layout, slow/blank loading, "related videos" at the end, and a
-// fallback CTA that didn't point at the right video). Opening the exact
-// video URL on TikTok itself is simple, fast, and always correct — and it
-// still counts as a real view/like on the actual platform.
+/* ---------- Will It Freeze Dry: episodes open the exact video on TikTok ---------- */
+// Embedding TikTok's player inline proved unreliable (broken layout, slow blank
+// loads, unrelated "related videos"), so each episode is a plain link that
+// opens the exact video in a new tab — still a real view/like on TikTok.
+
+// Thumbnails fade in once decoded; the tile shows a calm placeholder until then.
 (function () {
-  document.querySelectorAll('.wifd-tile[data-tiktok-url]').forEach(function (tile) {
-    var playBtn = tile.querySelector('.wifd-play');
-    if (!playBtn) return;
-    playBtn.addEventListener('click', function () {
-      window.open(tile.getAttribute('data-tiktok-url'), '_blank', 'noopener');
-    });
+  document.querySelectorAll('.wifd-thumb').forEach(function (img) {
+    function done() { img.classList.add('is-loaded'); }
+    if (img.complete && img.naturalWidth) done();
+    else {
+      img.addEventListener('load', done);
+      img.addEventListener('error', done);
+    }
   });
+})();
+
+// Earlier-episodes rail: arrow buttons page through it, and disable at either end.
+(function () {
+  var rail = document.getElementById('wifdRail');
+  if (!rail) return;
+  var prev = document.querySelector('[data-rail="prev"]');
+  var next = document.querySelector('[data-rail="next"]');
+
+  function step() {
+    var card = rail.querySelector('.wifd-card');
+    if (!card) return rail.clientWidth;
+    var gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+    var perView = Math.max(1, Math.floor((rail.clientWidth + gap) / (card.offsetWidth + gap)));
+    return perView * (card.offsetWidth + gap);
+  }
+
+  function update() {
+    var max = rail.scrollWidth - rail.clientWidth - 2;
+    if (prev) prev.disabled = rail.scrollLeft <= 2;
+    if (next) next.disabled = rail.scrollLeft >= max;
+  }
+
+  function go(direction) {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    rail.scrollBy({ left: direction * step(), behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  if (prev) prev.addEventListener('click', function () { go(-1); });
+  if (next) next.addEventListener('click', function () { go(1); });
+  rail.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
 })();
 
 wireNetlifyForm('waitlistForm', 'waitlistConfirm');
